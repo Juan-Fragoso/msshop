@@ -40,7 +40,7 @@ function Navbars({ onSelectCategory, onScrollToProducts }: Props) {
           onClick={handleLogoClick}
           style={{ cursor: "pointer" }}
         >
-          <img src="/msshop.png" alt="logo MsShop" width={150} />
+          <img src="/public/msshop.png" alt="logo MsShop" width={150} />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
