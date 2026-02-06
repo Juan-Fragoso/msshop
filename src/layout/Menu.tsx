@@ -23,7 +23,7 @@ function Navbars({ selectedCategoryId, onScrollToProducts }: Props) {
   }, []);
 
   const handleLogoClick = () => {
-    window.location.href = "#/";
+    window.location.hash = "#/";
   };
 
   return (
