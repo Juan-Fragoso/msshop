@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import Button from "react-bootstrap/Button";
 import { getMenuItems, type MenuItem } from "../api/MenuServices.ts";
 
 type Props = {
-  onSelectCategory?: (category: string) => void;
+  onSelectCategory?: (category: string | null) => void;
+  onScrollToProducts?: () => void;
 };
 
-function Navbars({ onSelectCategory }: Props) {
-  // Menu
+function Navbars({ onSelectCategory, onScrollToProducts }: Props) {
   const [menus, setMenus] = useState<MenuItem[]>([]);
 
   useEffect(() => {
@@ -22,43 +22,58 @@ function Navbars({ onSelectCategory }: Props) {
     fetchData();
   }, []);
 
+  const handleCategoryClick = (category: string | null) => {
+    onSelectCategory?.(category);
+    onScrollToProducts?.();
+  };
+
+  const handleLogoClick = () => {
+    onSelectCategory?.(null);
+    window.location.href = "/";
+  };
+
   return (
-    <Navbar expand="lg" className="navbar-custom" data-bs-theme="dark">
-      <Container fluid>
-        <Navbar.Brand href="#">Logo</Navbar.Brand>
+    <Navbar expand="lg" className="navbar-premium" sticky="top">
+      <Container fluid className="px-4">
+        <Navbar.Brand
+          href="#/"
+          className="fw-bold fs-5"
+          onClick={handleLogoClick}
+          style={{ cursor: "pointer" }}
+        >
+          <img src="/msshop.png" alt="logo MsShop" width={150} />
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
-          <Nav
-            className="me-auto my-2 my-lg-0"
-            style={{ maxHeight: "100px" }}
-            navbarScroll
-          >
+          <Nav className="ms-auto me-3 align-items-center gap-2">
             <Nav.Link
-              className="text-color"
+              className="nav-item-premium"
               href="#/"
-              onClick={() => onSelectCategory?.(null as any)}
+              onClick={() => handleCategoryClick(null as any)}
             >
-              Todos
+              ✨ Todos
             </Nav.Link>
             {menus.map((item) => (
               <Nav.Link
-                className="text-color"
+                className="nav-item-premium"
                 key={item.id}
                 href={`/#/${item.id}`}
-                onClick={() => onSelectCategory?.(item.name)}
+                onClick={() => handleCategoryClick(item.name)}
               >
-                {item.name}
+                {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
               </Nav.Link>
             ))}
           </Nav>
-          <Form className="d-flex">
+          <Form className="d-flex gap-2">
             <Form.Control
               type="search"
-              placeholder="Search"
-              className="me-2"
+              placeholder="Buscar productos..."
+              className="search-input"
               aria-label="Search"
             />
-            <Button variant="outline-success">Search</Button>
+            <Button variant="success" className="btn-search">
+              🔍
+            </Button>
           </Form>
         </Navbar.Collapse>
       </Container>
