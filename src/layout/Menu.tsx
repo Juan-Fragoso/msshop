@@ -3,24 +3,34 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { getMenuItems, type MenuItem } from "../services/MenuServices.ts";
+import { useProductsData } from "../hooks/useProductsData.ts";
 import logo from "../assets/msshop.png";
 
 type Props = {
-  selectedCategoryId?: string | null; // NUEVO: recibe el id actual
+  selectedCategoryId?: string | null;
   onScrollToProducts?: () => void;
+  onSearch?: (query: string) => void;
 };
 
-function Navbars({ selectedCategoryId, onScrollToProducts }: Props) {
-  const [menus, setMenus] = useState<MenuItem[]>([]);
+function Navbars({ selectedCategoryId, onScrollToProducts, onSearch }: Props) {
+  const { categories: menus } = useProductsData();
+  const [query, setQuery] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    setQuery(value);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getMenuItems();
-      setMenus(data);
-    };
-    fetchData();
-  }, []);
+    const timeout = setTimeout(() => {
+      // Ejecuta la búsqueda si tiene más de 3 caracteres O si está vacío (para limpiar)
+      if ((query.length > 3 || query.length === 0) && onSearch) {
+        onSearch(query);
+      }
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [query, onSearch]);
 
   const handleLogoClick = () => {
     window.location.hash = "#/";
@@ -71,6 +81,8 @@ function Navbars({ selectedCategoryId, onScrollToProducts }: Props) {
               placeholder="Buscar productos..."
               className="search-input"
               aria-label="Search"
+              value={query}
+              onChange={handleChange}
             />
           </Form>
         </Navbar.Collapse>

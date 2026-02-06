@@ -5,14 +5,20 @@ import Hero from "./components/Hero";
 import Products from "./components/Products";
 import Footer from "./components/Footer";
 import "./App.css";
-import { getMenuItems, type MenuItem } from "./services/MenuServices";
 
 function App() {
   // Estado: guarda el ID de la categoría seleccionada (sincronizado con la URL)
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null,
   );
-  const [menus, setMenus] = useState<MenuItem[]>([]); // NUEVO: guarda las categorías
+
+  // Estado: guarda el término de búsqueda
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // Función para manejar la búsqueda
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
 
   // Función para hacer scroll a los productos
   const scrollToProducts = () => {
@@ -21,15 +27,6 @@ function App() {
       productsSection.scrollIntoView({ behavior: "smooth" });
     }
   };
-
-  // NUEVO: cargar menus una sola vez
-  useEffect(() => {
-    const fetchMenus = async () => {
-      const data = await getMenuItems();
-      setMenus(data);
-    };
-    fetchMenus();
-  }, []);
 
   // IMPORTANTE: Este effect lee la URL y sincroniza con React
   useEffect(() => {
@@ -62,9 +59,13 @@ function App() {
       <Navbars
         selectedCategoryId={selectedCategoryId}
         onScrollToProducts={scrollToProducts}
+        onSearch={handleSearch}
       />
       <Hero onShopClick={scrollToProducts} />
-      <Products selectedCategoryId={selectedCategoryId} menus={menus} />
+      <Products
+        selectedCategoryId={selectedCategoryId}
+        searchQuery={searchQuery}
+      />
       <Footer />
     </div>
   );

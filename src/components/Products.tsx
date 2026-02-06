@@ -3,28 +3,23 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { useEffect, useState } from "react";
-import { getProducts, type Product } from "../services/ProductServices";
+import { useState } from "react";
+import { useProductsData } from "../hooks/useProductsData";
 import ProductDetail from "./ProductDetail";
-import type { MenuItem } from "../services/MenuServices";
 
 type Props = {
-  selectedCategoryId: string | null; // NUEVO: recibe el id actual
-  menus?: MenuItem[]; // NUEVO: recibe las categorías
+  selectedCategoryId: string | null;
+  searchQuery?: string; // NUEVO: recibe el término de búsqueda
 };
 
-function Products({ selectedCategoryId, menus = [] }: Props) {
-  const [productsList, setProductsList] = useState<Product[]>([]);
+function Products({ selectedCategoryId, searchQuery = "" }: Props) {
+  const {
+    products: productsList,
+    categories: menus,
+    isLoading,
+  } = useProductsData();
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getProducts();
-      setProductsList(response);
-    };
-    fetchData();
-  }, []);
 
   // PIEZA CLAVE: mapea ID → nombre de categoría
   const getCategoryNameById = (id: string | null): string | null => {
@@ -38,17 +33,23 @@ function Products({ selectedCategoryId, menus = [] }: Props) {
   // Obtén el NOMBRE de la categoría seleccionada
   const selectedCategoryName = getCategoryNameById(selectedCategoryId);
 
-  // Filtra productos por NOMBRE de categoría
-  const filteredProducts = selectedCategoryName
-    ? productsList.filter((p: any) => {
-        // Compara el nombre del producto con el nombre de la categoría seleccionada
-        // Asegúrate que comparas en minúsculas por si acaso
-        return (
-          String(p.category).toLowerCase() ===
-          String(selectedCategoryName).toLowerCase()
-        );
-      })
-    : productsList;
+  // Filtra productos por CATEGORÍA Y/O BÚSQUEDA
+  const filteredProducts = productsList.filter((p: any) => {
+    // Filtro por categoría
+    const matchesCategory = selectedCategoryName
+      ? String(p.category).toLowerCase() ===
+        String(selectedCategoryName).toLowerCase()
+      : true; // Si no hay categoría seleccionada, mostrar todos
+
+    // Filtro por búsqueda
+    const matchesSearch = searchQuery
+      ? String(p.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(p.description).toLowerCase().includes(searchQuery.toLowerCase())
+      : true; // Si no hay búsqueda, pasar el filtro
+
+    // Retorna true si coincide con AMBOS filtros
+    return matchesCategory && matchesSearch;
+  });
 
   const handleImageClick = (product: any) => {
     setSelectedProduct(product);
@@ -59,23 +60,45 @@ function Products({ selectedCategoryId, menus = [] }: Props) {
     alert(`✅ ${product.title} añadido al carrito`);
   };
 
+  if (isLoading) {
+    return (
+      <section className="products-section">
+        <Container className="py-5">
+          <div className="text-center">
+            <p>Cargando productos...</p>
+          </div>
+        </Container>
+      </section>
+    );
+  }
+
   return (
     <section className="products-section">
       <Container className="py-5">
         <div className="section-header mb-5">
           <h2 className="section-title">Nuestros Productos</h2>
           <p className="section-subtitle">
-            {selectedCategoryId
-              ? `Productos de la categoría: ${selectedCategoryId}`
-              : "Explora nuestro catálogo completo"}
+            {searchQuery
+              ? `Resultados de búsqueda: "${searchQuery}"`
+              : selectedCategoryId
+                ? `Productos de la categoría: ${selectedCategoryId}`
+                : "Explora nuestro catálogo completo"}
           </p>
           <div className="title-underline"></div>
         </div>
 
         {filteredProducts.length === 0 ? (
           <div className="text-center py-5">
-            <h4>No hay productos en esta categoría</h4>
-            <p className="text-muted">Intenta seleccionar otra categoría</p>
+            <h4>
+              {searchQuery
+                ? `No hay productos que coincidan con "${searchQuery}"`
+                : "No hay productos en esta categoría"}
+            </h4>
+            <p className="text-muted">
+              {searchQuery
+                ? "Intenta con otro término de búsqueda"
+                : "Intenta seleccionar otra categoría"}
+            </p>
           </div>
         ) : (
           <Row xs={1} sm={2} md={3} lg={4} className="g-4">
