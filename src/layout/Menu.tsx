@@ -24,8 +24,8 @@ function Navbars({ selectedCategoryId, onScrollToProducts, onSearch }: Props) {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      // Ejecuta la búsqueda si tiene más de 3 caracteres O si está vacío (para limpiar)
-      if ((query.length > 3 || query.length === 0) && onSearch) {
+      // Ejecuta la búsqueda si tiene más de 1 carácter O si está vacío (para limpiar)
+      if ((query.length > 1 || query.length === 0) && onSearch) {
         onSearch(query);
       }
     }, 500);
