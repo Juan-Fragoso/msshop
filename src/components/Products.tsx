@@ -4,7 +4,7 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { useEffect, useState } from "react";
-import { getProducts, type Product } from "../api/ProductServices";
+import { getProducts, type Product } from "../services/ProductServices";
 import ProductDetail from "./ProductDetail";
 
 type Props = {

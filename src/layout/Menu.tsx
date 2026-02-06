@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
-import { getMenuItems, type MenuItem } from "../api/MenuServices.ts";
+import { getMenuItems, type MenuItem } from "../services/MenuServices.ts";
 
 type Props = {
   onSelectCategory?: (category: string | null) => void;
