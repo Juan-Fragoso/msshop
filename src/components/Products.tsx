@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { useEffect, useState } from "react";
 import { getProducts, type Product } from "../api/ProductServices";
+import ProductDetail from "./ProductDetail";
 
 type Props = {
   selectedCategory?: string | null;
@@ -12,6 +13,8 @@ type Props = {
 
 function Products({ selectedCategory }: Props) {
   const [productsList, setProductsList] = useState<Product[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +27,15 @@ function Products({ selectedCategory }: Props) {
   const filteredProducts = selectedCategory
     ? productsList.filter((p: any) => p.category === selectedCategory)
     : productsList;
+
+  const handleImageClick = (product: any) => {
+    setSelectedProduct(product);
+    setShowModal(true);
+  };
+
+  const handleAddToCart = (product: any) => {
+    alert(`✅ ${product.title} añadido al carrito`);
+  };
 
   return (
     <section className="products-section">
@@ -48,15 +60,16 @@ function Products({ selectedCategory }: Props) {
             {filteredProducts.map((p: any) => (
               <Col key={p.id}>
                 <Card className="product-card h-100">
-                  <div className="product-image-wrapper">
+                  <div
+                    className="product-image-wrapper"
+                    onClick={() => handleImageClick(p)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <img
                       src={p.image}
                       alt={p.title}
                       className="product-image"
                     />
-                    <div className="product-badge">
-                      <span className="badge-text">Hot Deal</span>
-                    </div>
                   </div>
 
                   <Card.Body className="d-flex flex-column pt-3">
@@ -88,9 +101,7 @@ function Products({ selectedCategory }: Props) {
                     <div className="mt-auto">
                       <Button
                         className="btn-add-cart w-100"
-                        onClick={() =>
-                          alert(`✅ ${p.title} añadido al carrito`)
-                        }
+                        onClick={() => handleAddToCart(p)}
                       >
                         🛒 Añadir al Carrito
                       </Button>
@@ -102,6 +113,14 @@ function Products({ selectedCategory }: Props) {
           </Row>
         )}
       </Container>
+
+      {/* Modal de detalles del producto */}
+      <ProductDetail
+        show={showModal}
+        product={selectedProduct}
+        onHide={() => setShowModal(false)}
+        onAddToCart={handleAddToCart}
+      />
     </section>
   );
 }

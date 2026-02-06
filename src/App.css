@@ -380,6 +380,7 @@ body {
 .product-category {
   color: var(--primary-color);
   font-weight: 600;
+  text-transform: capitalize;
 }
 
 .product-price {
@@ -507,4 +508,135 @@ body {
     width: 100%;
     text-align: center;
   }
+}
+
+/* ========== PRODUCT DETAIL MODAL ========== */
+.product-modal .modal-header {
+  background: #f8f9fa;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.product-modal .modal-title {
+  color: var(--dark-color);
+  font-size: 1.5rem;
+}
+
+.product-modal .btn-close {
+  filter: brightness(0.5);
+}
+
+.product-detail-image-wrapper {
+  background: var(--light-color);
+  border-radius: 15px;
+  padding: 2rem;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.product-detail-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.product-details {
+  padding: 0;
+}
+
+.price-section {
+  background: linear-gradient(
+    135deg,
+    rgba(17, 194, 146, 0.1) 0%,
+    rgba(17, 194, 146, 0.05) 100%
+  );
+  padding: 1.5rem;
+  border-radius: 10px;
+}
+
+.stock-section {
+  background: #f0f8f5;
+  padding: 1.5rem;
+  border-radius: 10px;
+}
+
+.quantity-control {
+  width: fit-content;
+  border: 2px solid var(--border-color);
+  border-radius: 50px;
+  padding: 0.25rem 0.5rem;
+}
+
+.quantity-btn {
+  border: none !important;
+  padding: 0.25rem 0.75rem !important;
+  font-size: 1.2rem !important;
+  color: var(--primary-color) !important;
+  min-width: 35px;
+  transition: all 0.2s ease;
+}
+
+.quantity-btn:hover {
+  background: var(--light-color) !important;
+  transform: scale(1.1);
+}
+
+.quantity-input {
+  width: 60px;
+  text-align: center;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.quantity-input:focus {
+  outline: none;
+}
+
+.action-buttons {
+  margin-top: 2rem;
+}
+
+.btn-add-cart-modal {
+  background: var(--primary-color) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(17, 194, 146, 0.3);
+}
+
+.btn-add-cart-modal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(17, 194, 146, 0.5);
+}
+
+.features-section {
+  border-left: 4px solid var(--primary-color);
+}
+
+.features-section p {
+  line-height: 2;
+  color: #555;
+}
+
+.features-section strong {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+/* Hover efecto en imagen clickeable */
+.product-image-wrapper {
+  transition: all 0.3s ease;
+}
+
+.product-image-wrapper:hover .product-image {
+  filter: brightness(1.1);
 }
