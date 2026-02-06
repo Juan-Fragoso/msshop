@@ -3,7 +3,6 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import Button from "react-bootstrap/Button";
 import { getMenuItems, type MenuItem } from "../services/MenuServices.ts";
 
 type Props = {
@@ -71,9 +70,6 @@ function Navbars({ onSelectCategory, onScrollToProducts }: Props) {
               className="search-input"
               aria-label="Search"
             />
-            <Button variant="success" className="btn-search">
-              🔍
-            </Button>
           </Form>
         </Navbar.Collapse>
       </Container>
