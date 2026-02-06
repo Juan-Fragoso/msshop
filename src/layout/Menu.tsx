@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { getMenuItems, type MenuItem } from "../services/MenuServices.ts";
+import logo from "../assets/msshop.png";
 
 type Props = {
   onSelectCategory?: (category: string | null) => void;
@@ -40,7 +41,7 @@ function Navbars({ onSelectCategory, onScrollToProducts }: Props) {
           onClick={handleLogoClick}
           style={{ cursor: "pointer" }}
         >
-          <img src="/public/msshop.png" alt="logo MsShop" width={150} />
+          <img src={logo} alt="logo MsShop" width={150} />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
