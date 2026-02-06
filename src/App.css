@@ -1,0 +1,10 @@
+/* Menu */
+.navbar-custom {
+  background-color: #051137;
+}
+
+/* cuando el link está activo */
+.text-color.nav-link.active {
+  color: #11c292;
+  font-weight: bold;
+}
