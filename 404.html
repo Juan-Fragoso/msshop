@@ -5,18 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Redirecting...</title>
     <script>
-      // Redirige a /msshop/ si el usuario intenta acceder a la raíz
-      var path = window.location.pathname;
+      // Redirige a /msshop/ cualquier ruta que NO comience con /msshop/
+      (function () {
+        var path = window.location.pathname;
 
-      // Si no contiene /msshop/, redirige allá
-      if (!path.includes("/msshop/")) {
-        // Mantiene la ruta después de /msshop/
-        var segments = path.split("/").filter(Boolean);
-        window.location.pathname = "/msshop/" + segments.join("/");
-      }
+        // Si la ruta NO comienza con /msshop/, redirige
+        if (!path.startsWith("/msshop/")) {
+          // Obtén lo que vino después del dominio (sin la barra al final)
+          var redirect = "/msshop/";
+
+          // Si hay algo más en la ruta, agrégalo
+          if (path !== "/" && path !== "") {
+            redirect += path.substring(1); // Quita la / del inicio
+          }
+
+          window.location.replace(redirect);
+        }
+      })();
     </script>
   </head>
   <body>
-    Redirecting...
+    <p>Redirecting to /msshop/...</p>
   </body>
 </html>
