@@ -9,9 +9,7 @@ export interface MenuItem {
 export async function getMenuItems(): Promise<MenuItem[]> {
   try {
     const response = await axios.get(`${API_AXIOS}/products`);
-    // Extraer categorías y eliminar duplicados con Set
     const categories = [...new Set(response.data.map((p: any) => p.category))];
-    console.log(categories);
 
     return categories.map((category, index) => ({
       id: index + 1,

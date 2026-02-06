@@ -6,9 +6,11 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { getMenuItems, type MenuItem } from "../api/MenuServices.ts";
 
-type Props = {};
+type Props = {
+  onSelectCategory?: (category: string) => void;
+};
 
-function Navbars({}: Props) {
+function Navbars({ onSelectCategory }: Props) {
   // Menu
   const [menus, setMenus] = useState<MenuItem[]>([]);
 
@@ -31,11 +33,19 @@ function Navbars({}: Props) {
             style={{ maxHeight: "100px" }}
             navbarScroll
           >
+            <Nav.Link
+              className="text-color"
+              href="#/"
+              onClick={() => onSelectCategory?.(null as any)}
+            >
+              Todos
+            </Nav.Link>
             {menus.map((item) => (
               <Nav.Link
                 className="text-color"
                 key={item.id}
                 href={`/#/${item.id}`}
+                onClick={() => onSelectCategory?.(item.name)}
               >
                 {item.name}
               </Nav.Link>

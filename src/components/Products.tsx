@@ -6,9 +6,11 @@ import Button from "react-bootstrap/Button";
 import { useEffect, useState } from "react";
 import { getProducts, type Product } from "../api/ProductServices";
 
-type Props = {};
+type Props = {
+  selectedCategory?: string | null;
+};
 
-function Products({}: Props) {
+function Products({ selectedCategory }: Props) {
   const [productsList, setProductsList] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -19,10 +21,15 @@ function Products({}: Props) {
     fetchData();
   }, []);
 
+  // Filtrar productos según la categoría seleccionada
+  const filteredProducts = selectedCategory
+    ? productsList.filter((p: any) => p.category === selectedCategory)
+    : productsList;
+
   return (
     <Container className="py-3">
       <Row xs={1} sm={2} md={3} lg={4} className="g-3">
-        {productsList.map((p) => (
+        {filteredProducts.map((p: any) => (
           <Col key={p.id}>
             <Card className="h-100 shadow-sm">
               <div
@@ -31,7 +38,7 @@ function Products({}: Props) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  //   background: "#f8f9fa",
+                  background: "#f8f9fa",
                 }}
               >
                 <img
@@ -40,7 +47,7 @@ function Products({}: Props) {
                   style={{
                     maxHeight: "100%",
                     maxWidth: "100%",
-                    objectFit: "cover",
+                    objectFit: "contain",
                   }}
                 />
               </div>
