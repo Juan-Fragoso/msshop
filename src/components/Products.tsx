@@ -6,12 +6,14 @@ import Button from "react-bootstrap/Button";
 import { useEffect, useState } from "react";
 import { getProducts, type Product } from "../services/ProductServices";
 import ProductDetail from "./ProductDetail";
+import type { MenuItem } from "../services/MenuServices";
 
 type Props = {
-  selectedCategory?: string | null;
+  selectedCategoryId: string | null; // NUEVO: recibe el id actual
+  menus?: MenuItem[]; // NUEVO: recibe las categorías
 };
 
-function Products({ selectedCategory }: Props) {
+function Products({ selectedCategoryId, menus = [] }: Props) {
   const [productsList, setProductsList] = useState<Product[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
@@ -24,8 +26,28 @@ function Products({ selectedCategory }: Props) {
     fetchData();
   }, []);
 
-  const filteredProducts = selectedCategory
-    ? productsList.filter((p: any) => p.category === selectedCategory)
+  // PIEZA CLAVE: mapea ID → nombre de categoría
+  const getCategoryNameById = (id: string | null): string | null => {
+    if (!id) return null;
+    // Busca en menus el item que tenga ese ID
+    const menu = menus.find((m) => String(m.id) === String(id));
+    // Retorna el nombre si existe, sino null
+    return menu ? menu.name : null;
+  };
+
+  // Obtén el NOMBRE de la categoría seleccionada
+  const selectedCategoryName = getCategoryNameById(selectedCategoryId);
+
+  // Filtra productos por NOMBRE de categoría
+  const filteredProducts = selectedCategoryName
+    ? productsList.filter((p: any) => {
+        // Compara el nombre del producto con el nombre de la categoría seleccionada
+        // Asegúrate que comparas en minúsculas por si acaso
+        return (
+          String(p.category).toLowerCase() ===
+          String(selectedCategoryName).toLowerCase()
+        );
+      })
     : productsList;
 
   const handleImageClick = (product: any) => {
@@ -43,8 +65,8 @@ function Products({ selectedCategory }: Props) {
         <div className="section-header mb-5">
           <h2 className="section-title">Nuestros Productos</h2>
           <p className="section-subtitle">
-            {selectedCategory
-              ? `Productos de la categoría: ${selectedCategory}`
+            {selectedCategoryId
+              ? `Productos de la categoría: ${selectedCategoryId}`
               : "Explora nuestro catálogo completo"}
           </p>
           <div className="title-underline"></div>
@@ -85,7 +107,7 @@ function Products({ selectedCategory }: Props) {
                     </div>
 
                     <p className="product-category text-muted small">
-                      {selectedCategory || p.category}
+                      {p.category || "Categoría"}
                     </p>
 
                     <div className="product-price my-3">

@@ -7,11 +7,11 @@ import { getMenuItems, type MenuItem } from "../services/MenuServices.ts";
 import logo from "../assets/msshop.png";
 
 type Props = {
-  onSelectCategory?: (category: string | null) => void;
+  selectedCategoryId?: string | null; // NUEVO: recibe el id actual
   onScrollToProducts?: () => void;
 };
 
-function Navbars({ onSelectCategory, onScrollToProducts }: Props) {
+function Navbars({ selectedCategoryId, onScrollToProducts }: Props) {
   const [menus, setMenus] = useState<MenuItem[]>([]);
 
   useEffect(() => {
@@ -22,13 +22,7 @@ function Navbars({ onSelectCategory, onScrollToProducts }: Props) {
     fetchData();
   }, []);
 
-  const handleCategoryClick = (category: string | null) => {
-    onSelectCategory?.(category);
-    onScrollToProducts?.();
-  };
-
   const handleLogoClick = () => {
-    onSelectCategory?.(null);
     window.location.href = "/";
   };
 
@@ -36,7 +30,6 @@ function Navbars({ onSelectCategory, onScrollToProducts }: Props) {
     <Navbar expand="lg" className="navbar-premium" sticky="top">
       <Container fluid className="px-4">
         <Navbar.Brand
-          href="#/"
           className="fw-bold fs-5"
           onClick={handleLogoClick}
           style={{ cursor: "pointer" }}
@@ -47,18 +40,26 @@ function Navbars({ onSelectCategory, onScrollToProducts }: Props) {
         <Navbar.Collapse id="navbarScroll">
           <Nav className="ms-auto me-3 align-items-center gap-2">
             <Nav.Link
-              className="nav-item-premium"
+              className={`nav-item-premium ${
+                selectedCategoryId === null || selectedCategoryId === ""
+                  ? "active"
+                  : ""
+              }`}
               href="#/"
-              onClick={() => handleCategoryClick(null as any)}
+              onClick={() => onScrollToProducts?.()}
             >
               ✨ Todos
             </Nav.Link>
             {menus.map((item) => (
               <Nav.Link
-                className="nav-item-premium"
                 key={item.id}
-                href={`/#/${item.id}`}
-                onClick={() => handleCategoryClick(item.name)}
+                // El href cambia la URL automáticamente
+                href={`#/${item.id}`}
+                // className dinámico: si el id actual === id del item, añade "active"
+                className={`nav-item-premium ${
+                  String(selectedCategoryId) === String(item.id) ? "active" : ""
+                }`}
+                onClick={() => onScrollToProducts?.()}
               >
                 {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
               </Nav.Link>
