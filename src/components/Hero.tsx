@@ -3,7 +3,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
-import heroShopping from "../assets/hero-shopping.svg";
 
 type Props = {
   onShopClick?: () => void;
