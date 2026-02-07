@@ -28,7 +28,13 @@ function Login({ onLogin, isLoading = false, error }: Props) {
       // Limpia los campos después de login exitoso
       setUsername("");
       setPassword("");
+      // Redirige a la página principal después de login exitoso
+      window.location.hash = "#/";
     }
+  };
+
+  const handleBackClick = () => {
+    window.location.hash = "#/";
   };
 
   return (
@@ -76,7 +82,7 @@ function Login({ onLogin, isLoading = false, error }: Props) {
                 <Button
                   variant="primary"
                   type="submit"
-                  className="w-100"
+                  className="w-100 mb-2"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -87,6 +93,14 @@ function Login({ onLogin, isLoading = false, error }: Props) {
                   ) : (
                     "Iniciar Sesión"
                   )}
+                </Button>
+                <Button
+                  variant="outline-secondary"
+                  className="w-100"
+                  onClick={handleBackClick}
+                  disabled={isLoading}
+                >
+                  Volver a la Tienda
                 </Button>
               </Form>
             </Card.Body>

@@ -3,6 +3,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import Button from "react-bootstrap/Button";
 import { useProductsData } from "../hooks/useProductsData.ts";
 import logo from "../assets/msshop.png";
 
@@ -10,9 +11,17 @@ type Props = {
   selectedCategoryId?: string | null;
   onScrollToProducts?: () => void;
   onSearch?: (query: string) => void;
+  isLoggedIn?: boolean;
+  onLogout?: () => void;
 };
 
-function Navbars({ selectedCategoryId, onScrollToProducts, onSearch }: Props) {
+function Navbars({
+  selectedCategoryId,
+  onScrollToProducts,
+  onSearch,
+  isLoggedIn = false,
+  onLogout,
+}: Props) {
   const { categories: menus } = useProductsData();
   const [query, setQuery] = useState("");
 
@@ -34,6 +43,17 @@ function Navbars({ selectedCategoryId, onScrollToProducts, onSearch }: Props) {
 
   const handleLogoClick = () => {
     window.location.hash = "#/";
+  };
+
+  const handleLoginClick = () => {
+    window.location.hash = "#/login";
+  };
+
+  const handleLogoutClick = () => {
+    if (onLogout) {
+      onLogout();
+      window.location.hash = "#/";
+    }
   };
 
   return (
@@ -75,7 +95,7 @@ function Navbars({ selectedCategoryId, onScrollToProducts, onSearch }: Props) {
               </Nav.Link>
             ))}
           </Nav>
-          <Form className="d-flex gap-2">
+          <Form className="d-flex gap-2 align-items-center">
             <Form.Control
               type="search"
               placeholder="Buscar productos..."
@@ -84,6 +104,25 @@ function Navbars({ selectedCategoryId, onScrollToProducts, onSearch }: Props) {
               value={query}
               onChange={handleChange}
             />
+            {isLoggedIn ? (
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={handleLogoutClick}
+                className="ms-2"
+              >
+                Cerrar Sesión
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handleLoginClick}
+                className="ms-2"
+              >
+                Iniciar Sesión
+              </Button>
+            )}
           </Form>
         </Navbar.Collapse>
       </Container>

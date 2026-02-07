@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 interface UseAppNavigationReturn {
   selectedCategoryId: string | null;
   searchQuery: string;
+  currentRoute: string | null;
   handleSearch: (query: string) => void;
   scrollToProducts: () => void;
 }
@@ -12,6 +13,7 @@ export function useAppNavigation(): UseAppNavigationReturn {
     null,
   );
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentRoute, setCurrentRoute] = useState<string | null>(null);
 
   // Manejar búsqueda
   const handleSearch = (query: string) => {
@@ -26,17 +28,34 @@ export function useAppNavigation(): UseAppNavigationReturn {
     }
   };
 
-  // Sincronizar categoría con URL
+  // Sincronizar categoría y ruta con URL
   useEffect(() => {
-    const readCategoryIdFromHash = () => {
+    const readRouteFromHash = () => {
       const hash = location.hash.replace("#/", "");
-      return hash && hash !== "/" ? hash : null;
+      
+      // Si el hash es "login", es una ruta especial
+      if (hash === "login") {
+        setCurrentRoute("login");
+        setSelectedCategoryId(null);
+        return;
+      }
+      
+      // Si no hay hash o es "/", mostrar página principal
+      if (!hash || hash === "/" || hash === "") {
+        setCurrentRoute(null);
+        setSelectedCategoryId(null);
+        return;
+      }
+      
+      // De lo contrario, es una categoría
+      setCurrentRoute(null);
+      setSelectedCategoryId(hash);
     };
 
-    setSelectedCategoryId(readCategoryIdFromHash());
+    readRouteFromHash();
 
     const handleHashChange = () => {
-      setSelectedCategoryId(readCategoryIdFromHash());
+      readRouteFromHash();
     };
 
     window.addEventListener("hashchange", handleHashChange);
@@ -48,6 +67,7 @@ export function useAppNavigation(): UseAppNavigationReturn {
   return {
     selectedCategoryId,
     searchQuery,
+    currentRoute,
     handleSearch,
     scrollToProducts,
   };

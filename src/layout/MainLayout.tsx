@@ -8,6 +8,8 @@ interface MainLayoutProps {
   searchQuery: string;
   onSearch: (query: string) => void;
   onScrollToProducts: () => void;
+  isLoggedIn: boolean;
+  onLogout: () => void;
 }
 
 export function MainLayout({
@@ -15,6 +17,8 @@ export function MainLayout({
   searchQuery,
   onSearch,
   onScrollToProducts,
+  isLoggedIn,
+  onLogout,
 }: MainLayoutProps) {
   return (
     <div className="app-wrapper">
@@ -22,6 +26,8 @@ export function MainLayout({
         selectedCategoryId={selectedCategoryId}
         onScrollToProducts={onScrollToProducts}
         onSearch={onSearch}
+        isLoggedIn={isLoggedIn}
+        onLogout={onLogout}
       />
       <Hero onShopClick={onScrollToProducts} />
       <Products
