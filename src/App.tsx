@@ -7,7 +7,7 @@ import Login from "./components/Login";
 import { MainLayout } from "./layout/MainLayout";
 
 function App() {
-  const { isLoggedIn, login, logout, isLoading, error } = useAuth();
+  const { user, isLoggedIn, login, logout, isLoading, error } = useAuth();
   const {
     selectedCategoryId,
     searchQuery,
@@ -29,6 +29,7 @@ function App() {
       onSearch={handleSearch}
       onScrollToProducts={scrollToProducts}
       isLoggedIn={isLoggedIn}
+      user={user}
       onLogout={logout}
     />
   );

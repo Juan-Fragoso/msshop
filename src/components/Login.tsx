@@ -9,6 +9,7 @@ import {
   Alert,
   Spinner,
 } from "react-bootstrap";
+import logo from "../assets/msshop.png";
 
 type Props = {
   onLogin: (username: string, password: string) => Promise<boolean>;
@@ -38,76 +39,121 @@ function Login({ onLogin, isLoading = false, error }: Props) {
   };
 
   return (
-    <Container
-      className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <Row className="w-100">
-        <Col md={6} lg={4} className="mx-auto">
-          <Card className="shadow-lg">
-            <Card.Header className="bg-primary text-white text-center">
-              <Card.Title className="mb-0">MsShop</Card.Title>
-            </Card.Header>
-            <Card.Body>
-              <Card.Title className="text-center mb-4">
-                Inicia Sesión
-              </Card.Title>
+    <div className="login-page">
+      <Container className="login-container">
+        <Row className="justify-content-center align-items-center min-vh-100">
+          <Col xs={12} md={10} lg={8} xl={6}>
+            <Card className="login-card shadow-lg border-0">
+              {/* Header con gradiente */}
+              <div className="login-header">
+                <div className="login-logo">
+                  <div>
+                    <img src={logo} alt="logo MsShop" width={150} />
+                  </div>
+                </div>
+                <p className="login-welcome">¡Bienvenido de nuevo!</p>
+              </div>
 
-              {/* Mostrar error si hay */}
-              {error && <Alert variant="danger">{error}</Alert>}
+              <Card.Body className="p-4 p-md-5">
+                <h3 className="login-title text-center mb-4">Iniciar Sesión</h3>
 
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="formUsername">
-                  <Form.Label>Usuario</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Tu usuario"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </Form.Group>
+                {/* Mostrar error si hay */}
+                {error && (
+                  <Alert variant="danger" className="login-alert">
+                    <span className="alert-icon">⚠️</span> {error}
+                  </Alert>
+                )}
 
-                <Form.Group className="mb-4" controlId="formPassword">
-                  <Form.Label>Contraseña</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Tu contraseña"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </Form.Group>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group className="mb-4" controlId="formUsername">
+                    <Form.Label className="login-label">
+                      <span className="label-icon">👤</span> Usuario
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Ingresa tu usuario"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      disabled={isLoading}
+                      className="login-input"
+                      autoComplete="username"
+                    />
+                  </Form.Group>
 
-                <Button
-                  variant="primary"
-                  type="submit"
-                  className="w-100 mb-2"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Spinner animation="border" size="sm" className="me-2" />
-                      Iniciando sesión...
-                    </>
-                  ) : (
-                    "Iniciar Sesión"
-                  )}
-                </Button>
-                <Button
-                  variant="outline-secondary"
-                  className="w-100"
-                  onClick={handleBackClick}
-                  disabled={isLoading}
-                >
-                  Volver a la Tienda
-                </Button>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                  <Form.Group className="mb-4" controlId="formPassword">
+                    <Form.Label className="login-label">
+                      <span className="label-icon">🔒</span> Contraseña
+                    </Form.Label>
+                    <Form.Control
+                      type="password"
+                      placeholder="Ingresa tu contraseña"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isLoading}
+                      className="login-input"
+                      autoComplete="current-password"
+                    />
+                  </Form.Group>
+
+                  <div className="login-actions">
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      className="btn-login w-100 mb-3"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Spinner
+                            animation="border"
+                            size="sm"
+                            className="me-2"
+                          />
+                          Iniciando sesión...
+                        </>
+                      ) : (
+                        <>
+                          <span className="btn-icon">🚀</span> Iniciar Sesión
+                        </>
+                      )}
+                    </Button>
+
+                    <Button
+                      variant="outline-secondary"
+                      className="btn-back w-100"
+                      onClick={handleBackClick}
+                      disabled={isLoading}
+                    >
+                      <span className="btn-icon">🏠</span> Volver a la Tienda
+                    </Button>
+                  </div>
+                </Form>
+
+                {/* Demo credentials hint */}
+                {/* <div className="demo-hint mt-4">
+                  <p className="text-center text-muted small mb-2">
+                    <strong>💡 Credenciales de prueba:</strong>
+                  </p>
+                  <div className="demo-credentials">
+                    <code>Usuario: mor_2314</code>
+                    <code>Contraseña: 83r5^_</code>
+                  </div>
+                </div> */}
+              </Card.Body>
+
+              {/* Decorative elements */}
+              <div className="login-decoration login-decoration-1"></div>
+              <div className="login-decoration login-decoration-2"></div>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+
+      {/* Background decorations */}
+      <div className="login-bg-circle login-bg-circle-1"></div>
+      <div className="login-bg-circle login-bg-circle-2"></div>
+      <div className="login-bg-circle login-bg-circle-3"></div>
+    </div>
   );
 }
 

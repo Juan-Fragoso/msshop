@@ -4,7 +4,9 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
+import Dropdown from "react-bootstrap/Dropdown";
 import { useProductsData } from "../hooks/useProductsData.ts";
+import type { User } from "../hooks/useAuth";
 import logo from "../assets/msshop.png";
 
 type Props = {
@@ -12,6 +14,7 @@ type Props = {
   onScrollToProducts?: () => void;
   onSearch?: (query: string) => void;
   isLoggedIn?: boolean;
+  user?: User | null;
   onLogout?: () => void;
 };
 
@@ -20,6 +23,7 @@ function Navbars({
   onScrollToProducts,
   onSearch,
   isLoggedIn = false,
+  user = null,
   onLogout,
 }: Props) {
   const { categories: menus } = useProductsData();
@@ -54,6 +58,11 @@ function Navbars({
       onLogout();
       window.location.hash = "#/";
     }
+  };
+
+  // Función para obtener las iniciales del usuario
+  const getUserInitials = (username: string): string => {
+    return username.substring(0, 2).toUpperCase();
   };
 
   return (
@@ -104,23 +113,68 @@ function Navbars({
               value={query}
               onChange={handleChange}
             />
-            {isLoggedIn ? (
-              <Button
-                variant="outline-danger"
-                size="sm"
-                onClick={handleLogoutClick}
-                className="ms-2"
-              >
-                Cerrar Sesión
-              </Button>
+            {isLoggedIn && user ? (
+              <Dropdown align="end" className="user-dropdown">
+                <Dropdown.Toggle
+                  variant="link"
+                  id="user-dropdown"
+                  className="user-dropdown-toggle"
+                >
+                  <div className="user-profile-menu">
+                    <div className="user-avatar">
+                      <span className="user-initials">
+                        {getUserInitials(user.username)}
+                      </span>
+                      <div className="user-status-indicator"></div>
+                    </div>
+                    <div className="user-info d-none d-lg-block">
+                      <span className="user-name">{user.username}</span>
+                      <span className="user-badge">Premium</span>
+                    </div>
+                  </div>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="user-dropdown-menu">
+                  <div className="user-dropdown-header">
+                    <div className="user-avatar-large">
+                      {getUserInitials(user.username)}
+                    </div>
+                    <div className="user-dropdown-info">
+                      <strong>{user.username}</strong>
+                      <small className="text-muted">Usuario Premium</small>
+                    </div>
+                  </div>
+                  <Dropdown.Divider />
+                  <Dropdown.Item href="#/profile" className="dropdown-item-custom">
+                    <span className="dropdown-icon">👤</span>
+                    Mi Perfil
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/orders" className="dropdown-item-custom">
+                    <span className="dropdown-icon">📦</span>
+                    Mis Pedidos
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/settings" className="dropdown-item-custom">
+                    <span className="dropdown-icon">⚙️</span>
+                    Configuración
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item
+                    onClick={handleLogoutClick}
+                    className="dropdown-item-custom dropdown-item-logout"
+                  >
+                    <span className="dropdown-icon">🚪</span>
+                    Cerrar Sesión
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             ) : (
               <Button
                 variant="primary"
-                size="sm"
                 onClick={handleLoginClick}
-                className="ms-2"
+                className="btn-login-menu"
               >
-                Iniciar Sesión
+                <span className="btn-icon">🔐</span>
+                <span className="btn-text">Iniciar Sesión</span>
               </Button>
             )}
           </Form>
