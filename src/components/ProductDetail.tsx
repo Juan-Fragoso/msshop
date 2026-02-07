@@ -34,9 +34,12 @@ function ProductDetail({ show, product, onHide, onAddToCart }: Props) {
       size="lg"
       centered
       className="product-modal"
+      aria-labelledby="product-modal-title"
     >
       <Modal.Header closeButton className="border-bottom-0">
-        <Modal.Title className="fw-bold">{product.title}</Modal.Title>
+        <Modal.Title id="product-modal-title" className="fw-bold">
+          {product.title}
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -46,8 +49,9 @@ function ProductDetail({ show, product, onHide, onAddToCart }: Props) {
             <div className="product-detail-image-wrapper">
               <img
                 src={product.image}
-                alt={product.title}
+                alt={`Imagen del producto: ${product.title}`}
                 className="product-detail-image"
+                loading="lazy"
               />
             </div>
           </Col>
@@ -61,7 +65,12 @@ function ProductDetail({ show, product, onHide, onAddToCart }: Props) {
                   {product.category || "Producto"}
                 </span>
                 <div className="product-rating">
-                  <span className="stars">⭐⭐⭐⭐⭐</span>
+                  <span
+                    className="stars"
+                    aria-label="Calificación: 5 de 5 estrellas"
+                  >
+                    ⭐⭐⭐⭐⭐
+                  </span>
                   <span className="ms-2 text-muted">(128 reviews)</span>
                 </div>
               </div>
@@ -76,11 +85,17 @@ function ProductDetail({ show, product, onHide, onAddToCart }: Props) {
 
               {/* Precio */}
               <div className="price-section mb-4">
-                <div className="d-flex align-items-center gap-3">
-                  <span className="current-price fs-3">
+                <div className="d-flex align-items-center gap-3 flex-wrap">
+                  <span
+                    className="current-price fs-3"
+                    aria-label={`Precio actual: $${product.price.toFixed(2)}`}
+                  >
                     ${product.price.toFixed(2)}
                   </span>
-                  <span className="original-price fs-5">
+                  <span
+                    className="original-price fs-5"
+                    aria-label={`Precio original: $${(product.price * 1.2).toFixed(2)}`}
+                  >
                     ${(product.price * 1.2).toFixed(2)}
                   </span>
                   <span className="discount fs-6 fw-bold">Ahorra 17%</span>
@@ -116,24 +131,34 @@ function ProductDetail({ show, product, onHide, onAddToCart }: Props) {
                     size="sm"
                     onClick={decrementQuantity}
                     className="quantity-btn"
+                    disabled={quantity <= 1}
+                    aria-label="Disminuir cantidad"
                   >
                     −
                   </Button>
                   <input
                     type="number"
                     min="1"
+                    max="99"
                     value={quantity}
                     onChange={(e) =>
-                      setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                      setQuantity(
+                        Math.max(
+                          1,
+                          Math.min(99, parseInt(e.target.value) || 1),
+                        ),
+                      )
                     }
                     className="quantity-input"
-                    readOnly
+                    aria-label={`Cantidad seleccionada: ${quantity}`}
                   />
                   <Button
                     variant="outline-secondary"
                     size="sm"
                     onClick={incrementQuantity}
                     className="quantity-btn"
+                    disabled={quantity >= 99}
+                    aria-label="Aumentar cantidad"
                   >
                     +
                   </Button>
@@ -146,10 +171,16 @@ function ProductDetail({ show, product, onHide, onAddToCart }: Props) {
                   className="btn-add-cart-modal"
                   size="lg"
                   onClick={handleAddToCart}
+                  aria-label={`Añadir ${quantity} ${quantity === 1 ? "unidad" : "unidades"} de ${product.title} al carrito`}
                 >
                   🛒 Añadir {quantity} al Carrito
                 </Button>
-                <Button variant="outline-secondary" size="lg" onClick={onHide}>
+                <Button
+                  variant="outline-secondary"
+                  size="lg"
+                  onClick={onHide}
+                  aria-label="Cerrar detalles del producto y continuar comprando"
+                >
                   Continuar comprando
                 </Button>
               </div>

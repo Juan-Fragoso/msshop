@@ -9,7 +9,7 @@ import ProductDetail from "./ProductDetail";
 
 type Props = {
   selectedCategoryId: string | null;
-  searchQuery?: string; // NUEVO: recibe el término de búsqueda
+  searchQuery?: string;
 };
 
 function Products({ selectedCategoryId, searchQuery = "" }: Props) {
@@ -21,33 +21,25 @@ function Products({ selectedCategoryId, searchQuery = "" }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
-  // PIEZA CLAVE: mapea ID → nombre de categoría
   const getCategoryNameById = (id: string | null): string | null => {
     if (!id) return null;
-    // Busca en menus el item que tenga ese ID
     const menu = menus.find((m) => String(m.id) === String(id));
-    // Retorna el nombre si existe, sino null
     return menu ? menu.name : null;
   };
 
-  // Obtén el NOMBRE de la categoría seleccionada
   const selectedCategoryName = getCategoryNameById(selectedCategoryId);
 
-  // Filtra productos por CATEGORÍA Y/O BÚSQUEDA
   const filteredProducts = productsList.filter((p: any) => {
-    // Filtro por categoría
     const matchesCategory = selectedCategoryName
       ? String(p.category).toLowerCase() ===
         String(selectedCategoryName).toLowerCase()
-      : true; // Si no hay categoría seleccionada, mostrar todos
+      : true;
 
-    // Filtro por búsqueda
     const matchesSearch = searchQuery
       ? String(p.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
         String(p.description).toLowerCase().includes(searchQuery.toLowerCase())
-      : true; // Si no hay búsqueda, pasar el filtro
+      : true;
 
-    // Retorna true si coincide con AMBOS filtros
     return matchesCategory && matchesSearch;
   });
 
@@ -57,6 +49,14 @@ function Products({ selectedCategoryId, searchQuery = "" }: Props) {
   };
 
   const handleAddToCart = (product: any) => {
+    // Animación de éxito más elegante
+    const button = document.activeElement as HTMLButtonElement;
+    if (button) {
+      button.style.transform = "scale(0.95)";
+      setTimeout(() => {
+        button.style.transform = "";
+      }, 150);
+    }
     alert(`✅ ${product.title} añadido al carrito`);
   };
 
@@ -65,6 +65,9 @@ function Products({ selectedCategoryId, searchQuery = "" }: Props) {
       <section className="products-section">
         <Container className="py-5">
           <div className="text-center">
+            <div className="spinner-border text-primary mb-3" role="status">
+              <span className="visually-hidden">Cargando...</span>
+            </div>
             <p>Cargando productos...</p>
           </div>
         </Container>
@@ -73,15 +76,15 @@ function Products({ selectedCategoryId, searchQuery = "" }: Props) {
   }
 
   return (
-    <section className="products-section">
+    <section className="products-section" id="products-section">
       <Container className="py-5">
         <div className="section-header mb-5">
           <h2 className="section-title">Nuestros Productos</h2>
           <p className="section-subtitle">
             {searchQuery
               ? `Resultados de búsqueda: "${searchQuery}"`
-              : selectedCategoryId
-                ? `Productos de la categoría: ${selectedCategoryId}`
+              : selectedCategoryName
+                ? `Productos de la categoría: ${selectedCategoryName}`
                 : "Explora nuestro catálogo completo"}
           </p>
           <div className="title-underline"></div>
@@ -89,6 +92,12 @@ function Products({ selectedCategoryId, searchQuery = "" }: Props) {
 
         {filteredProducts.length === 0 ? (
           <div className="text-center py-5">
+            <div className="mb-4">
+              <i
+                className="bi bi-search"
+                style={{ fontSize: "4rem", color: "#6c757d" }}
+              ></i>
+            </div>
             <h4>
               {searchQuery
                 ? `No hay productos que coincidan con "${searchQuery}"`
@@ -109,35 +118,52 @@ function Products({ selectedCategoryId, searchQuery = "" }: Props) {
                     className="product-image-wrapper"
                     onClick={() => handleImageClick(p)}
                     style={{ cursor: "pointer" }}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        handleImageClick(p);
+                      }
+                    }}
+                    aria-label={`Ver detalles de ${p.title}`}
                   >
                     <img
                       src={p.image}
                       alt={p.title}
                       className="product-image"
+                      loading="lazy"
                     />
                   </div>
 
                   <Card.Body className="d-flex flex-column pt-3">
-                    <Card.Title className="product-title">
+                    <Card.Title className="product-title" title={p.title}>
                       {p.title.length > 50
                         ? p.title.substring(0, 50) + "..."
                         : p.title}
                     </Card.Title>
 
                     <div className="product-rating mb-2">
-                      <span className="stars">⭐⭐⭐⭐⭐</span>
+                      <span className="stars" aria-label="5 de 5 estrellas">
+                        ⭐⭐⭐⭐⭐
+                      </span>
                       <span className="rating-text">(128 reviews)</span>
                     </div>
 
-                    <p className="product-category text-muted small">
+                    <span className="product-category">
                       {p.category || "Categoría"}
-                    </p>
+                    </span>
 
                     <div className="product-price my-3">
-                      <span className="current-price">
+                      <span
+                        className="current-price"
+                        aria-label={`Precio actual: $${p.price.toFixed(2)}`}
+                      >
                         ${p.price.toFixed(2)}
                       </span>
-                      <span className="original-price">
+                      <span
+                        className="original-price"
+                        aria-label={`Precio original: $${(p.price * 1.2).toFixed(2)}`}
+                      >
                         ${(p.price * 1.2).toFixed(2)}
                       </span>
                       <span className="discount">-17%</span>
@@ -147,6 +173,7 @@ function Products({ selectedCategoryId, searchQuery = "" }: Props) {
                       <Button
                         className="btn-add-cart w-100"
                         onClick={() => handleAddToCart(p)}
+                        aria-label={`Añadir ${p.title} al carrito`}
                       >
                         🛒 Añadir al Carrito
                       </Button>
@@ -159,7 +186,6 @@ function Products({ selectedCategoryId, searchQuery = "" }: Props) {
         )}
       </Container>
 
-      {/* Modal de detalles del producto */}
       <ProductDetail
         show={showModal}
         product={selectedProduct}
